@@ -1,0 +1,91 @@
+import jk.widget.common
+
+class is TitledWidget #widget:
+
+ui LayerWidget
+{
+    VerticalScrollerWidget{
+        scrollBarDisabled = true
+        LayerWithBackgroundColorWidget container {
+            color = Color.white()
+            HorizontalBoxWidget list {
+            }
+            VerticalBoxWidget list {
+                margin = context.getHeightValue("5mm")
+                spacing = context.getHeightValue("5mm")
+    
+                LabelWidget labelEmail {
+                    text ="Email"
+                    textColor = Color.black()
+                }
+
+                TextInputWidget inputEmail{
+                    type = TextInputWidget.TYPE_EMAIL_ADDRESS
+                    placeholder = "     Enter Email"
+                    backgroundColor = Color.black()
+                    fontSize = context.getHeightValue("5mm")
+                    padding = context.getHeightValue("1mm")
+                } 
+
+                LabelWidget labelPassword{
+                    text ="Password"
+                    textColor = Color.black()
+                }
+
+                TextInputWidget inputPassword{
+                    type = TextInputWidget.TYPE_PASSWORD
+                    placeholder = "     Enter Password"
+                    backgroundColor = Color.black()
+                    fontSize = context.getHeightValue("5mm")
+                    padding = context.getHeightValue("1mm")
+                } 
+
+                HorizontalBoxWidget list {
+                    LabelWidget labelForgetPassWord{
+                    text ="Forget your Password?Click here."
+                    textColor = Color.instance("#3716e9")
+                    }
+                    TextButtonWidget btnLogin : 1.0 {
+                        text = "LOG IN"
+                        backgroundColor = Color.instance("#3716e9")
+                        fontSize = context.getHeightValue("5mm")
+                        clickHandler = func {
+                            onAddingTaskClicked()
+                       }
+                    }
+                }
+            }
+        }
+        
+    }
+}
+
+func initializeWidget override
+{
+    base.initializeWidget()
+    APIClient.getInstance().getTasks(func(response as DynamicMap) {
+        var data = assert response.getDynamicMap("data")
+        var records = data.getDynamicVector("records")
+        if not records || records.getSize() < 1 {
+            list.addWidget(AlignWidget.forWidget(context, LabelWidget.forText(context, "No record")), 1.0)
+        }
+        else {
+            foreach record as DynamicMap in records.toVector() {
+                    var task = record.getString("name") .. " - " .. record.getString("description")
+                    var lblTask = LabelWidget.forText(context, task)
+                    var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
+                    hbox.addWidget(lblTask)
+                    list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
+            }
+        }
+    })
+
+}
+
+func getWidgetTitle as string:
+    return "AirlineSched List"
+
+func onAddingTaskClicked
+{
+
+}
