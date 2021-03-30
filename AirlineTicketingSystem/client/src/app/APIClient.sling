@@ -47,4 +47,3 @@ func deleteAirlineSched(id as string, callback as function<void, DynamicMap>, er
 
 func getAirlineSched(callback as function<void, DynamicMap>, errorCallback as function<void, Error> = null):
     doGet("/AirlineShed", callback, errorCallback)
-
